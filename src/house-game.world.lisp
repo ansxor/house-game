@@ -15,16 +15,18 @@
 
 (defparameter *world-data* nil)
 
-(defun generate-test-chunk ()
+(defun generate-test-chunk (seed x y)
   "Returns a zeroed chunk for testing."
   (make-array +chunk-size+ :initial-element 0))
 
-(defun generate-world (generator-function)
+(defun generate-world (seed generator-function)
+  "Generate a world using the GENERATOR-FUNCTION, which is then fed the x, y and SEED 
+  for generating chunks in the world."
   (setf *world-data* (make-array +world-size+ :initial-element nil))
   (destructuring-bind (n m) (array-dimensions *world-data*)
     (loop for i from 0 below n do
       (loop for j from 0 below m do
-            (setf (aref *world-data* i j) (funcall generator-function))))))
+            (setf (aref *world-data* i j) (funcall generator-function seed i j))))))
 
 (defun get-chunk (x y)
   (aref *world-data* y x))
