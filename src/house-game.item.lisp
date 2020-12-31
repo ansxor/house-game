@@ -35,7 +35,7 @@
 			  :initarg :item-type
 			  :initform :wall
 			  :type keyword
-			  :documentation "How the item interacts with the game. The available types are `:floor', `:item' and `:wall'")
+			  :documentation "How the item interacts with the game. The available types are `:floor', `:decoration', `:item' and `:wall'")
    (action-type :reader action-type
 				:initarg nil
 				:initform :none
@@ -61,24 +61,21 @@
   (format stream "~a"
 		  (yason:encode (hashed-representation obj))))
 
-(defparameter *item-db* nil
-  "Database for the items in the game.")
-
 ;;; Helpers to add items to the database.
 (defun create-item (name display description)
   "Create an item that is suitable to be added to the database.
   This exists more for testing purposes over more interactive items in the game."
   (make-instance 'item :name name :display display :description description))
 
-(defun add-item (name display description)
+(defmacro add-item (name display description database)
   "Create an item and then add it to the database"
-  (push (create-item name display description) *item-db*))
+  `(push (create-item ,name ,display ,description) ,database))
 
 ;;; To help with manipulating the database in general.
-(defun clear-database ()
+(defmacro clear-database (database)
   "Clear the database. This should rarely be used but is an available option."
-  (setf *item-db* nil))
+  `(setf ,database nil))
 
-(defun print-database ()
+(defun print-database (database)
   "Print the entire contents of the database in JSON format."
-  (yason:encode (reverse (mapcar #'hashed-representation *item-db*))))
+  (yason:encode (reverse (mapcar #'hashed-representation database))))
