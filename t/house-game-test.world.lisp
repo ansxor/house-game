@@ -5,16 +5,16 @@
 
 (defun render-chunk(chunk-data item-dataset)
   "Render the CHUNK-DATA with the ITEM-DATASET that is passed to it using `format'"
-  (destructuring-bind (n m) (array-dimensions chunk-data)
+  (destructuring-bind (n m o) (array-dimensions chunk-data)
 	(loop for i from 0 below n do
 	  (loop for j from 0 below m do
-		(format t "~a" (hgame-item:display (nth (aref chunk-data i j) item-dataset))))
+		(format t "~a" (hgame-item:display (nth (aref chunk-data i j 2) item-dataset))))
 		  do (format t "~%"))))
 
 (defun chunk-render-test ()
   "Populate a dummy item database, generate a chunk and render it."
   (let ((item-dataset nil)
-		(chunk (hgame-world:generate-test-chunk)))
+		(chunk (hgame-world:generate-test-chunk 0 0 0)))
 	(hgame-item:add-item "Wooden Plank" "=" "OwO" item-dataset)
 	(format t "~%")
 	(render-chunk chunk item-dataset)))
